@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DataSathi - Ration List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body style="font-family: Arial; text-align:center; padding:20px;">
+
+  <h1>DataSathi</h1>
+  <p>Ration Card List Check Kare</p>
+
+  <input type="text" id="search" placeholder="Apna naam ya ration number dale">
+  <br><br>
+  <button onclick="searchData()">Search</button>
+
+  <p id="result"></p>
+
+  <script>
+    function searchData() {
+      let input = document.getElementById("search").value;
+      document.getElementById("result").innerHTML = 
+        "Result yaha dikhega (abhi demo hai)";
+    }
+  </script>
+
+</body>
+</html>
