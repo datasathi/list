@@ -1,127 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Redirecting to Store →</title>
-    <!-- Immediate meta refresh (0 seconds) -->
-    <meta http-equiv="refresh" content="0; https://script.google.com/macros/s/AKfycbzZtmc2nNY1yqomqyZN6zxav8KCVEjNWUoaJ2JIVNtfCBqLF6UsJS79ZfVb6N87jTBKSA/exec">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: #f9f6f0;
-            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 1.5rem;
-        }
-        .redirect-card {
-            max-width: 540px;
-            width: 100%;
-            background: white;
-            border-radius: 2rem;
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
-            padding: 2rem 1.8rem 2.2rem;
-            text-align: center;
-            transition: all 0.2s ease;
-            border: 1px solid #ffe3cf;
-        }
-        .spinner {
-            display: inline-block;
-            width: 48px;
-            height: 48px;
-            border: 4px solid #fcd5b5;
-            border-top-color: #e67e22;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-bottom: 1.4rem;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        h2 {
-            font-size: 1.7rem;
-            font-weight: 600;
-            color: #2c3e2f;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.3px;
-        }
-        .store-name {
-            background: #fef3e8;
-            display: inline-block;
-            padding: 0.3rem 1rem;
-            border-radius: 40px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #b45f2b;
-            margin: 0.75rem 0 0.5rem;
-        }
-        p {
-            color: #5e5a55;
-            margin: 0.9rem 0 0.5rem;
-            font-size: 1rem;
-        }
-        .redirect-link {
-            display: inline-block;
-            margin-top: 0.7rem;
-            font-size: 0.85rem;
-            background: #f7ede4;
-            padding: 0.5rem 1rem;
-            border-radius: 60px;
-            text-decoration: none;
-            color: #c2571a;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-        .redirect-link:hover {
-            background: #f5e2d4;
-            color: #9b4010;
-        }
-        .small-note {
-            font-size: 0.75rem;
-            color: #a6a19b;
-            margin-top: 1.6rem;
-            border-top: 1px solid #f0e4da;
-            padding-top: 1rem;
-        }
-        @media (max-width: 480px) {
-            .redirect-card {
-                padding: 1.5rem;
-            }
-            h2 {
-                font-size: 1.4rem;
-            }
-        }
-    </style>
-    <script>
-        // IMMEDIATE REDIRECT — no delay, no history entry (replace)
-        (function() {
-            // Target URL (exactly as requested, fully encoded & preserved)
-            const targetUrl = "https://script.google.com/macros/s/AKfycbzZtmc2nNY1yqomqyZN6zxav8KCVEjNWUoaJ2JIVNtfCBqLF6UsJS79ZfVb6N87jTBKSA/exec";
-            
-            // Use location.replace() to avoid back-button loops & make redirect seamless
-            window.location.replace(targetUrl);
-        })();
-    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subscription Expired</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #ff4d4d, #ff1a1a);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+    }
+
+    .box {
+        background: rgba(0,0,0,0.7);
+        padding: 30px;
+        border-radius: 15px;
+        max-width: 400px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+        color: #ffcc00;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 16px;
+        margin: 15px 0;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 25px;
+        background: #00cc66;
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .btn:hover {
+        background: #00994d;
+    }
+
+    .warning {
+        color: #ff9999;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+</style>
 </head>
+
 <body>
-    <!-- fallback / visible content (only shows if redirect is extremely slow or blocked, but user will barely see it) -->
-    <div class="redirect-card">
-        <div class="spinner"></div>
-        <h2>⟳ स्टोर</h2>
-        <div class="store-name">🚀 Redirecting to shop →</div>
-        <p>आपको कुछ ही क्षणों में स्टोर पर भेज दिया जाएगा।<br>यदि रीडायरेक्ट न हो तो नीचे दिए लिंक पर क्लिक करें।</p>
-        <a href="https://script.google.com/macros/s/AKfycbzZtmc2nNY1yqomqyZN6zxav8KCVEjNWUoaJ2JIVNtfCBqLF6UsJS79ZfVb6N87jTBKSA/exec" class="redirect-link">
-            📍 मैन्युअल लिंक पर जाएँ →
-        </a>
-        <div class="small-note">
-            ⚡ छोटा लिंक · तुरंत रीडायरेक्ट<br>
-    </div>
+
+<div class="box">
+    <h1>⚠ Subscription Expired</h1>
+
+    <p>
+        आपका subscription समाप्त हो चुका है।<br>
+        कृपया तुरंत recharge करें ताकि आपकी service बंद न हो।
+    </p>
+
+    <p class="warning">
+        ⚡ बिना recharge के data/service तुरंत बंद की जा सकती है।
+    </p>
+
+    <a href="https://your-payment-link.com" class="btn">
+        Recharge Now
+    </a>
+</div>
+
 </body>
 </html>
