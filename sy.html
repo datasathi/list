@@ -3,59 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Subscription Expired</title>
+<title>Recharge Required</title>
 
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #ff4d4d, #ff1a1a);
-        color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        text-align: center;
-    }
-
-    .box {
-        background: rgba(0,0,0,0.7);
-        padding: 30px;
-        border-radius: 15px;
-        max-width: 400px;
-        box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    }
-
-    h1 {
-        color: #ffcc00;
-        margin-bottom: 10px;
-    }
-
-    p {
-        font-size: 16px;
-        margin: 15px 0;
-    }
-
-    .btn {
-        display: inline-block;
-        padding: 12px 25px;
-        background: #00cc66;
-        color: white;
-        text-decoration: none;
-        border-radius: 25px;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-
-    .btn:hover {
-        background: #00994d;
-    }
-
-    .warning {
-        color: #ff9999;
-        font-size: 14px;
-        margin-top: 10px;
-    }
+body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(135deg, #ff0000, #990000);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+.box {
+    background: rgba(0,0,0,0.8);
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 400px;
+}
+h1 { color: #ffd700; }
+.btn {
+    display: inline-block;
+    padding: 15px 25px;
+    background: #00cc66;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    margin-top: 15px;
+    font-weight: bold;
+}
+.btn:hover { background: #00994d; }
+.warning { color: #ff9999; font-size: 14px; }
 </style>
 </head>
 
@@ -65,16 +45,16 @@
     <h1>⚠ Subscription Expired</h1>
 
     <p>
-        आपका subscription समाप्त हो चुका है।<br>
-        कृपया तुरंत recharge करें ताकि आपकी service बंद न हो।
+        आपका subscription खत्म हो चुका है।<br>
+        सेवा चालू रखने के लिए तुरंत recharge करें।
     </p>
 
     <p class="warning">
-        ⚡ बिना recharge के data/service तुरंत बंद की जा सकती है।
+        ⚡ बिना recharge service बंद कर दी जाएगी।
     </p>
 
-    <a href="https://your-payment-link.com" class="btn">
-        Recharge Now
+    <a href="upi://pay?pa=mohsin4665@okaxis&pn=Mohsin%20Khan&am=100&cu=INR" class="btn">
+        Recharge Now ₹100
     </a>
 </div>
 
