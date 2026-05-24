@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Loading Store →</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #f9f6f0;
             font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
@@ -27,7 +23,6 @@
             box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
             padding: 2rem 1.8rem 2.2rem;
             text-align: center;
-            transition: all 0.2s ease;
             border: 1px solid #ffe3cf;
         }
         .spinner {
@@ -40,16 +35,8 @@
             animation: spin 0.8s linear infinite;
             margin-bottom: 1.4rem;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        h2 {
-            font-size: 1.7rem;
-            font-weight: 600;
-            color: #2c3e2f;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.3px;
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        h2 { font-size: 1.7rem; font-weight: 600; color: #2c3e2f; margin-bottom: 0.5rem; }
         .store-name {
             background: #fef3e8;
             display: inline-block;
@@ -60,11 +47,7 @@
             color: #b45f2b;
             margin: 0.75rem 0 0.5rem;
         }
-        p {
-            color: #5e5a55;
-            margin: 0.9rem 0 0.5rem;
-            font-size: 1rem;
-        }
+        p { color: #5e5a55; margin: 0.9rem 0 0.5rem; }
         .redirect-link {
             display: inline-block;
             margin-top: 0.7rem;
@@ -74,35 +57,9 @@
             border-radius: 60px;
             text-decoration: none;
             color: #c2571a;
-            font-weight: 500;
-            transition: 0.2s;
         }
-        .redirect-link:hover {
-            background: #f5e2d4;
-            color: #9b4010;
-        }
-        .small-note {
-            font-size: 0.75rem;
-            color: #a6a19b;
-            margin-top: 1.6rem;
-            border-top: 1px solid #f0e4da;
-            padding-top: 1rem;
-        }
-        .error-message {
-            color: #d32f2f;
-            background: #ffebee;
-            padding: 0.8rem;
-            border-radius: 1rem;
-            margin-top: 1rem;
-        }
-        @media (max-width: 480px) {
-            .redirect-card {
-                padding: 1.5rem;
-            }
-            h2 {
-                font-size: 1.4rem;
-            }
-        }
+        .small-note { font-size: 0.75rem; color: #a6a19b; margin-top: 1.6rem; border-top: 1px solid #f0e4da; padding-top: 1rem; }
+        @media (max-width: 480px) { .redirect-card { padding: 1.5rem; } h2 { font-size: 1.4rem; } }
     </style>
 </head>
 <body>
@@ -112,48 +69,39 @@
         <div class="store-name" id="statusMsg">🔍 Checking subscription...</div>
         <p id="infoText">कृपया एक क्षण प्रतीक्षा करें।</p>
         <div id="manualLink" style="display: none;"></div>
-        <div class="small-note">
-            ⚡ सुरक्षित लिंक · स्वचालित जाँच<br>
-        </div>
+        <div class="small-note">⚡ सुरक्षित लिंक · स्वचालित जाँच</div>
     </div>
 
     <script>
-        // ========== CONFIGURATION (आपको बदलना होगा) ==========
-        const SHEET_ID = "1d7kF6qWvxvM6PF1AxYupMEHcQ6U3T4Ga50rGaFASAAU";   // यहाँ अपनी नयी sheet का ID डालें
-        const API_KEY = "AIzaSyDR2HIy0Bi5C2-1sOPEkmBvxMfVJmSQg4w";     // यहाँ API key डालें
-        // ====================================================
+        // ========== CONFIGURATION (अपनी sheet ID और API key यहाँ डालें) ==========
+        const SHEET_ID = "1d7kF6qWvxvM6PF1AxYupMEHcQ6U3T4Ga50rGaFASAAU";
+        const API_KEY = "AIzaSyDR2HIy0Bi5C2-1sOPEkmBvxMfVJmSQg4w";
+        // =========================================================================
 
-        // Target redirect URL (same as your original)
         const targetUrl = "https://myli.netlify.app?shop=1ey7mQI8ttQAI-8gKVamp-i2SOmnNBO0HhgZy19xUPHE&shopName=Smt%20Adarsh&shopNumber=10070406&nikaya=%E0%A4%A8%E0%A4%BF%E0%A4%95%E0%A4%BE%E0%A4%AF%3A%20Lawar%20%28NP%29%20%2C%20%20%E0%A4%9C%E0%A4%BF%E0%A4%B2%E0%A4%BE%20%3A%20Meerut&=";
         
-        // Extract shop ID from target URL (shopNumber parameter)
         function getShopIdFromUrl() {
             const match = targetUrl.match(/[?&]shopNumber=([^&]+)/);
             return match ? match[1] : null;
         }
 
-        const shopId = getShopIdFromUrl();  // e.g., "10070406"
-        
-        // Current date
-        const now = new Date();
-        const currentMonth = now.getMonth() + 1;
-        const currentYear = now.getFullYear();
+        const shopId = getShopIdFromUrl();
+        const today = new Date();  // aaj ki date
+        today.setHours(0, 0, 0, 0); // time zone issue se bachne ke liye
 
-        // Helper: Update UI for expired state
         function showExpired() {
             document.getElementById("spinner").style.display = "none";
             document.getElementById("statusMsg").innerHTML = "⚠️ Subscription Expired";
             document.getElementById("statusMsg").style.color = "#d32f2f";
             document.getElementById("infoText").innerHTML = "आपका रिचार्ज समाप्त हो गया है। कृपया भुगतान करें।";
-            const manualDiv = document.getElementById("manualLink");
-            manualDiv.style.display = "block";
-            manualDiv.innerHTML = `<a href="${targetUrl}" class="redirect-link">📌 फिर भी स्टोर खोलें? (पुराना डेटा)</a>`;
+            // अगर "फिर भी खोलें" लिंक नहीं चाहिए तो नीचे वाली lines comment कर दें
+            // const manualDiv = document.getElementById("manualLink");
+            // manualDiv.style.display = "block";
+            // manualDiv.innerHTML = `<a href="${targetUrl}" class="redirect-link">📌 फिर भी स्टोर खोलें? (पुराना डेटा)</a>`;
         }
 
-        // Call subscription API
         if (!shopId) {
-            // No shop ID found – fallback to redirect (or show error)
-            console.error("No shopNumber found in URL");
+            console.error("No shopNumber found");
             showExpired();
         } else {
             fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/subscriptions?key=${API_KEY}`)
@@ -164,16 +112,19 @@
                     if (rows && rows.length > 1) {
                         for (let i = 1; i < rows.length; i++) {
                             const rowShopId = rows[i][0]?.toString();
-                            const rowMonth = parseInt(rows[i][1]);
-                            const rowYear = parseInt(rows[i][2]);
-                            if (rowShopId === shopId && rowMonth === currentMonth && rowYear === currentYear) {
-                                active = true;
-                                break;
+                            // paid_until column (column D, index 3)
+                            const paidUntilStr = rows[i][3];
+                            if (rowShopId === shopId && paidUntilStr) {
+                                const paidUntil = new Date(paidUntilStr);
+                                paidUntil.setHours(0, 0, 0, 0);
+                                if (today <= paidUntil) {
+                                    active = true;
+                                    break;
+                                }
                             }
                         }
                     }
                     if (active) {
-                        // Active: redirect immediately
                         window.location.replace(targetUrl);
                     } else {
                         showExpired();
@@ -181,7 +132,6 @@
                 })
                 .catch(err => {
                     console.error("Subscription check failed:", err);
-                    // On error, show expired (safety) – you could also redirect if you prefer
                     showExpired();
                 });
         }
