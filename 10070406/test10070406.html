@@ -62,18 +62,29 @@
     </div>
 
     <script>
-        // ========== CONFIGURATION (अपनी sheet ID और API key यहाँ डालें) ==========
-        const SHEET_ID = "1d7kF6qWvxvM6PF1AxYupMEHcQ6U3T4Ga50rGaFASAAU";   // आपकी असली sheet ID
-        const API_KEY = "AIzaSyDR2HIy0Bi5C2-1sOPEkmBvxMfVJmSQg4w";     // आपकी असली API key
-        // =========================================================================
+        // ========== CONFIGURATION (अपनी sheet ID और API key डालें) ==========
+        const SHEET_ID = "1d7kF6qWvxvM6PF1AxYupMEHcQ6U3T4Ga50rGaFASAAU";   // आपकी sheet ID
+        const API_KEY = "AIzaSyDR2HIy0Bi5C2-1sOPEkmBvxMfVJmSQg4w";     // आपकी API key
+        const SHOP_ID = "10070406";   // इस shop का ID
+        const TARGET_URL = "https://myli.netlify.app?shop=1ey7mQI8ttQAI-8gKVamp-i2SOmnNBO0HhgZy19xUPHE&shopName=Smt%20Adarsh&shopNumber=10070406&nikaya=%E0%A4%A8%E0%A4%BF%E0%A4%95%E0%A4%BE%E0%A4%AF%3A%20Lawar%20%28NP%29%20%2C%20%20%E0%A4%9C%E0%A4%BF%E0%A4%B2%E0%A4%BE%20%3A%20Meerut&=";
+        // =================================================================
 
-        const targetUrl = "https://myli.netlify.app?shop=1ey7mQI8ttQAI-8gKVamp-i2SOmnNBO0HhgZy19xUPHE&shopName=Smt%20Adarsh&shopNumber=10070406&nikaya=%E0%A4%A8%E0%A4%BF%E0%A4%95%E0%A4%BE%E0%A4%AF%3A%20Lawar%20%28NP%29%20%2C%20%20%E0%A4%9C%E0%A4%BF%E0%A4%B2%E0%A4%BE%20%3A%20Meerut&=";
-        
-        const shopId = "10070406";  // सीधा ID डाल दिया, URL से निकालने की जरूरत नहीं
-        
-        const now = new Date();
-        const currentMonth = now.getMonth() + 1;
-        const currentYear = now.getFullYear();
+        function parseDate(dateStr) {
+            // Try to handle DD/MM/YYYY or YYYY-MM-DD
+            if (!dateStr) return null;
+            let parts;
+            if (dateStr.includes('-')) {
+                parts = dateStr.split('-'); // YYYY-MM-DD
+                return new Date(parts[0], parts[1]-1, parts[2]);
+            } else if (dateStr.includes('/')) {
+                parts = dateStr.split('/'); // DD/MM/YYYY
+                return new Date(parts[2], parts[1]-1, parts[0]);
+            }
+            return new Date(dateStr);
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
         function showExpired() {
             document.getElementById("spinner").style.display = "none";
@@ -90,16 +101,18 @@
                 if (rows && rows.length > 1) {
                     for (let i = 1; i < rows.length; i++) {
                         const rowShopId = rows[i][0]?.toString();
-                        const rowMonth = parseInt(rows[i][1]);
-                        const rowYear = parseInt(rows[i][2]);
-                        if (rowShopId === shopId && rowMonth === currentMonth && rowYear === currentYear) {
-                            active = true;
-                            break;
+                        const paidUntilStr = rows[i][3]; // column D (paid_until)
+                        if (rowShopId === SHOP_ID && paidUntilStr) {
+                            const paidUntil = parseDate(paidUntilStr);
+                            if (paidUntil && today <= paidUntil) {
+                                active = true;
+                                break;
+                            }
                         }
                     }
                 }
                 if (active) {
-                    window.location.replace(targetUrl);
+                    window.location.replace(TARGET_URL);
                 } else {
                     showExpired();
                 }
