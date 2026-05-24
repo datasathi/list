@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Redirecting to Store →</title>
-    <!-- Immediate meta refresh (0 seconds) -->
-    <meta http-equiv="refresh" content="0; url=https://myli.netlify.app?shop=1ey7mQI8ttQAI-8gKVamp-i2SOmnNBO0HhgZy19xUPHE&shopName=Smt%20Adarsh&shopNumber=10070406&nikaya=%E0%A4%A8%E0%A4%BF%E0%A4%95%E0%A4%BE%E0%A4%AF%3A%20Lawar%20%28NP%29%20%2C%20%20%E0%A4%9C%E0%A4%BF%E0%A4%B2%E0%A4%BE%20%3A%20Meerut&=">
+    <title>Loading Store →</title>
     <style>
         * {
             margin: 0;
@@ -90,6 +88,13 @@
             border-top: 1px solid #f0e4da;
             padding-top: 1rem;
         }
+        .error-message {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            margin-top: 1rem;
+        }
         @media (max-width: 480px) {
             .redirect-card {
                 padding: 1.5rem;
@@ -99,29 +104,87 @@
             }
         }
     </style>
-    <script>
-        // IMMEDIATE REDIRECT — no delay, no history entry (replace)
-        (function() {
-            // Target URL (exactly as requested, fully encoded & preserved)
-            const targetUrl = "https://myli.netlify.app?shop=1ey7mQI8ttQAI-8gKVamp-i2SOmnNBO0HhgZy19xUPHE&shopName=Smt%20Adarsh&shopNumber=10070406&nikaya=%E0%A4%A8%E0%A4%BF%E0%A4%95%E0%A4%BE%E0%A4%AF%3A%20Lawar%20%28NP%29%20%2C%20%20%E0%A4%9C%E0%A4%BF%E0%A4%B2%E0%A4%BE%20%3A%20Meerut&=";
-            
-            // Use location.replace() to avoid back-button loops & make redirect seamless
-            window.location.replace(targetUrl);
-        })();
-    </script>
 </head>
 <body>
-    <!-- fallback / visible content (only shows if redirect is extremely slow or blocked, but user will barely see it) -->
-    <div class="redirect-card">
-        <div class="spinner"></div>
+    <div class="redirect-card" id="mainCard">
+        <div class="spinner" id="spinner"></div>
         <h2>⟳ स्टोर</h2>
-        <div class="store-name">🚀 Redirecting to shop →</div>
-        <p>आपको कुछ ही क्षणों में स्टोर पर भेज दिया जाएगा।<br>यदि रीडायरेक्ट न हो तो नीचे दिए लिंक पर क्लिक करें।</p>
-        <a href="https://myli.netlify.app?shop=1ey7mQI8ttQAI-8gKVamp-i2SOmnNBO0HhgZy19xUPHE&shopName=Smt%20Adarsh&shopNumber=10070406&nikaya=%E0%A4%A8%E0%A4%BF%E0%A4%95%E0%A4%BE%E0%A4%AF%3A%20Lawar%20%28NP%29%20%2C%20%20%E0%A4%9C%E0%A4%BF%E0%A4%B2%E0%A4%BE%20%3A%20Meerut&=" class="redirect-link">
-            📍 मैन्युअल लिंक पर जाएँ →
-        </a>
+        <div class="store-name" id="statusMsg">🔍 Checking subscription...</div>
+        <p id="infoText">कृपया एक क्षण प्रतीक्षा करें।</p>
+        <div id="manualLink" style="display: none;"></div>
         <div class="small-note">
-            ⚡ छोटा लिंक · तुरंत रीडायरेक्ट<br>
+            ⚡ सुरक्षित लिंक · स्वचालित जाँच<br>
+        </div>
     </div>
+
+    <script>
+        // ========== CONFIGURATION (आपको बदलना होगा) ==========
+        const SHEET_ID = "YOUR_SUBSCRIPTIONS_SHEET_ID";   // यहाँ अपनी नयी sheet का ID डालें
+        const API_KEY = "YOUR_GOOGLE_SHEETS_API_KEY";     // यहाँ API key डालें
+        // ====================================================
+
+        // Target redirect URL (same as your original)
+        const targetUrl = "https://myli.netlify.app?shop=1ey7mQI8ttQAI-8gKVamp-i2SOmnNBO0HhgZy19xUPHE&shopName=Smt%20Adarsh&shopNumber=10070406&nikaya=%E0%A4%A8%E0%A4%BF%E0%A4%95%E0%A4%BE%E0%A4%AF%3A%20Lawar%20%28NP%29%20%2C%20%20%E0%A4%9C%E0%A4%BF%E0%A4%B2%E0%A4%BE%20%3A%20Meerut&=";
+        
+        // Extract shop ID from target URL (shopNumber parameter)
+        function getShopIdFromUrl() {
+            const match = targetUrl.match(/[?&]shopNumber=([^&]+)/);
+            return match ? match[1] : null;
+        }
+
+        const shopId = getShopIdFromUrl();  // e.g., "10070406"
+        
+        // Current date
+        const now = new Date();
+        const currentMonth = now.getMonth() + 1;
+        const currentYear = now.getFullYear();
+
+        // Helper: Update UI for expired state
+        function showExpired() {
+            document.getElementById("spinner").style.display = "none";
+            document.getElementById("statusMsg").innerHTML = "⚠️ Subscription Expired";
+            document.getElementById("statusMsg").style.color = "#d32f2f";
+            document.getElementById("infoText").innerHTML = "आपका रिचार्ज समाप्त हो गया है। कृपया भुगतान करें।";
+            const manualDiv = document.getElementById("manualLink");
+            manualDiv.style.display = "block";
+            manualDiv.innerHTML = `<a href="${targetUrl}" class="redirect-link">📌 फिर भी स्टोर खोलें? (पुराना डेटा)</a>`;
+        }
+
+        // Call subscription API
+        if (!shopId) {
+            // No shop ID found – fallback to redirect (or show error)
+            console.error("No shopNumber found in URL");
+            showExpired();
+        } else {
+            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/subscriptions?key=${API_KEY}`)
+                .then(res => res.json())
+                .then(data => {
+                    const rows = data.values;
+                    let active = false;
+                    if (rows && rows.length > 1) {
+                        for (let i = 1; i < rows.length; i++) {
+                            const rowShopId = rows[i][0]?.toString();
+                            const rowMonth = parseInt(rows[i][1]);
+                            const rowYear = parseInt(rows[i][2]);
+                            if (rowShopId === shopId && rowMonth === currentMonth && rowYear === currentYear) {
+                                active = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (active) {
+                        // Active: redirect immediately
+                        window.location.replace(targetUrl);
+                    } else {
+                        showExpired();
+                    }
+                })
+                .catch(err => {
+                    console.error("Subscription check failed:", err);
+                    // On error, show expired (safety) – you could also redirect if you prefer
+                    showExpired();
+                });
+        }
+    </script>
 </body>
 </html>
